@@ -1,28 +1,33 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { AboutExtraComponent } from './about-extra/about-extra.component';
-import { AboutComponent } from './about/about.component';
-import { AuthGuard } from './auth-guard';
-import { ErrorComponent } from './error/error.component';
-import { HomeComponent } from './home/home.component';
-import { PostComponent } from './post/post.component';
-import { PostsComponent } from './posts/posts.component';
+import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+// import { AdminModule } from './admin/admin.module';
+import { HomePageComponent } from './home-page/home-page.component';
+import { PostPageComponent } from './post-page/post-page.component';
+import { MainLayoutComponent } from './shared/components/main-layout/main-layout.component';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
   {
-    path: 'about',
-    component: AboutComponent,
-    children: [{ path: 'extra', component: AboutExtraComponent }],
+    path: '',
+    component: MainLayoutComponent,
+    children: [
+      { path: '', redirectTo: '/', pathMatch: 'full' },
+      { path: '', component: HomePageComponent },
+      { path: 'post/:id', component: PostPageComponent },
+    ],
   },
-  { path: 'posts', component: PostsComponent, canActivate: [AuthGuard] },
-  { path: 'posts/:id', component: PostComponent },
-  { path: 'error', component: ErrorComponent },
-  { path: '**', redirectTo: '/error' },
+  {
+    path: 'admin',
+    loadChildren: () =>
+      import('./admin/admin.module').then((m) => m.AdminModule),
+  },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [
+    RouterModule.forRoot(routes, {
+      preloadingStrategy: PreloadAllModules,
+    }),
+  ],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

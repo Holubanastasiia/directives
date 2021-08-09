@@ -1,0 +1,31 @@
+<div *ngIf="form; else loading">
+    <div class="container">
+        <form [formGroup]="form" (ngSubmit)="submit()">
+            <div class="form-control" [ngClass]="{invalid: f.title.touched && f.title.invalid}">
+                <label for="title">Post Title:</label>
+                <input id="title" type="text" formControlName="title">
+                <div class="validation" *ngIf="f.title.touched && f.title.invalid">
+                    <small *ngIf="f.title.errors!.required">enter post Title</small>
+                </div>
+            </div>
+
+            <div class="form-control" [ngClass]="{invalid: f.text.touched && f.text.invalid}">
+                <label for="text">Text:</label>
+                <textarea name="text" id="text" formControlName="text"></textarea>
+                <div class="validation" *ngIf="f.text.touched && f.text.invalid">
+                    <small *ngIf="f.text.errors!.required">enter some text</small>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" [disabled]="form.invalid || submitted">
+                Edit
+            </button>
+        </form>
+    </div>
+</div>
+
+<ng-template #loading>
+    <p class="text-center">
+        Please wait, loading...
+    </p>
+</ng-template>

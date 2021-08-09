@@ -1,28 +1,44 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, Provider } from '@angular/core';
 
 import { AppComponent } from './app.component';
-import { FormsModule } from '@angular/forms';
-import { AboutComponent } from './about/about.component';
-import { HomeComponent } from './home/home.component';
-import { PostsComponent } from './posts/posts.component';
-import { PostComponent } from './post/post.component';
-import { AboutExtraComponent } from './about-extra/about-extra.component';
 import { AppRoutingModule } from './app-routing.module';
-import { ErrorComponent } from './error/error.component';
+import { HomePageComponent } from './home-page/home-page.component';
+import { PostPageComponent } from './post-page/post-page.component';
+import { PostComponent } from './shared/components/post/post.component';
+import { MainLayoutComponent } from './shared/components/main-layout/main-layout.component';
+import { SharedModule } from './shared/shared.module';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterseptor } from './shared/components/auth.interceptor';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
+
+const INTERCEPTOP_PROVIDER: Provider = {
+  provide: HTTP_INTERCEPTORS,
+  multi: true,
+  useClass: AuthInterseptor,
+};
 
 @NgModule({
   declarations: [
     AppComponent,
-    AboutComponent,
-    HomeComponent,
-    PostsComponent,
+    MainLayoutComponent,
+    HomePageComponent,
+    PostPageComponent,
     PostComponent,
-    AboutExtraComponent,
-    ErrorComponent,
   ],
-  imports: [BrowserModule, FormsModule, AppRoutingModule],
-  providers: [],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    SharedModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+      // Register the ServiceWorker as soon as the app is stable
+      // or after 30 seconds (whichever comes first).
+      // registrationStrategy: 'registerWhenStable:30000',
+    }),
+  ],
+  providers: [INTERCEPTOP_PROVIDER],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

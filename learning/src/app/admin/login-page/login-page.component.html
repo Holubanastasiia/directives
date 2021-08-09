@@ -1,0 +1,36 @@
+<form class="card" [formGroup]='form' (ngSubmit)="submit()">
+    <h2>Enter to admin page</h2>
+
+    <div class="alert alert-info" *ngIf="message">
+        {{ message }}
+    </div>
+
+    <div class="alert alert-danger" *ngIf="auth.error$ | async as error">
+        {{ error }}
+    </div>
+
+    <div class="form-control" [ngClass]="{invalid: f.email.touched && f.email.invalid}">
+        <label for="email">Email:</label>
+        <input id="email" type="email" formControlName="email">
+        <div class="validation" *ngIf="f.email.touched && f.email.invalid">
+            <small *ngIf="f.email.errors!.required">error required</small>
+            <small *ngIf="f.email.errors!.email">error email</small>
+        </div>
+    </div>
+
+    <div class="form-control" [ngClass]="{invalid: f.password.touched && f.password.invalid}">
+        <label for="password">Password:</label>
+        <input id="password" type="password" formControlName="password">
+        <div class="validation" *ngIf="f.password.touched && f.password.invalid">
+            <small *ngIf="f.password.errors!.required">error required</small>
+            <small *ngIf="f.password.errors!.minlength">Password may have
+                {{f.password.errors!.minlength.requiredLength}}
+                characters
+                now {{f.password.errors!.minlength.actualLength}} characters
+            </small>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary" [disabled]="form.invalid || submitted">Log in</button>
+</form>
+<!-- [disabled]="form.invalid" -->
